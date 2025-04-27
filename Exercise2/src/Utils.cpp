@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 
 namespace PolygonalLibrary
 {
@@ -76,7 +77,6 @@ bool ImportCell0Ds(PolygonalMesh& mesh)
 		mesh.Cell0DsCoordinates(1, id) = y;
 		mesh.Cell0DsId.push_back(id);
         
-		Vector2d coord;
 
         mesh.Cell0DsId.push_back(id);
 		
@@ -92,9 +92,7 @@ bool ImportCell0Ds(PolygonalMesh& mesh)
                 it->second.push_back(id);
             }
         }
-
     }
-
     return true;
 }
 
@@ -272,4 +270,71 @@ bool ImportCell2Ds(PolygonalMesh& mesh)
     return true;
 }
 
+bool TestEdges(const PolygonalMesh& mesh) {
+	bool allEdges = true;
+    for (unsigned int id = 0; id < mesh.NumCell1Ds; ++id) {
+        double x0 = mesh.Cell0DsCoordinates(0, mesh.Cell1DsExtrema(0, id));  
+        double y0 = mesh.Cell0DsCoordinates(1, mesh.Cell1DsExtrema(0, id));  
+        double x1 = mesh.Cell0DsCoordinates(0, mesh.Cell1DsExtrema(1, id));  
+        double y1 = mesh.Cell0DsCoordinates(1, mesh.Cell1DsExtrema(1, id));  
+
+        double length = sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+
+        // Verifica che la lunghezza sia maggiore di una tolleranza 
+        if (length <= 1e-10)
+		{
+			cerr << "Edge with ID " << mesh.Cell1DsId[id] << " has zero length!" << endl;
+			allEdges = false;
+		}
+	}
+	return allEdges;
 }
+
+
+bool TestArea(const PolygonalMesh& mesh)
+{
+	bool allPol = true;
+    for (size_t i = 0; i < mesh.NumCell2Ds; ++i)
+    {
+        const vector<unsigned int>& vertexIds = mesh.Cell2DsVertices[i];
+        size_t numVertices = vertexIds.size();
+
+        if (numVertices < 3)
+        {
+            cerr << "Polygon with ID " << mesh.Cell2DsId[i] << " has less than 3 vertices!" << endl;
+            allPol = false;
+            continue;
+        }
+
+        double area = 0.0;
+
+        for (size_t j = 0; j < numVertices; ++j)
+        {
+            unsigned int id1 = vertexIds[j];
+            unsigned int id2 = vertexIds[(j + 1) % numVertices]; // Per chiudere il poligono
+
+            double x1 = mesh.Cell0DsCoordinates(0, id1);
+            double y1 = mesh.Cell0DsCoordinates(1, id1);
+
+            double x2 = mesh.Cell0DsCoordinates(0, id2);
+            double y2 = mesh.Cell0DsCoordinates(1, id2);
+
+            area += (x1 * y2) - (x2 * y1);
+        }
+
+        area = 0.5 * abs(area);
+
+        if (area <= 0.0)
+        {
+            cerr << "Polygon with ID " << mesh.Cell2DsId[i] << " has zero or negative area!" << endl;
+            allPol = false;
+        }
+    }
+
+    return allPol;
+}
+
+}
+
+
+

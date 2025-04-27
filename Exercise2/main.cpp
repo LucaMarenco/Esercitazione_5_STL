@@ -59,5 +59,26 @@ int main()
                                  cell1Ds_properties);
     }
 
+	if (!TestEdges(mesh))
+	{ 
+		cerr<< "Error: some edges have zero or negative length!" << endl;
+	}
+	else
+	{
+		cout << "All edges have non-zero length."  << endl;
+	}
+		
+	
+	if (!TestArea(mesh))
+	{ 
+		cerr<< "Error: some polygons have zero or negative area!" << std::endl;
+	}
+	else
+	{
+		cout << "All polygons have non-zero area" << endl;
+	}
+	
+	
+		
     return 0;
 }

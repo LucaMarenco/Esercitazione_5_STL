@@ -27,4 +27,7 @@ bool ImportCell1Ds(PolygonalMesh& mesh);
 /// return the result of the reading, true if is success, false otherwise
 bool ImportCell2Ds(PolygonalMesh& mesh);
 
+bool TestEdges(const PolygonalMesh& mesh);
+
+bool TestArea(const PolygonalMesh& mesh);
 }
