@@ -30,4 +30,6 @@ bool ImportCell2Ds(PolygonalMesh& mesh);
 bool TestEdges(const PolygonalMesh& mesh);
 
 bool TestArea(const PolygonalMesh& mesh);
+
+bool TestMarker(PolygonalMesh& mesh);
 }

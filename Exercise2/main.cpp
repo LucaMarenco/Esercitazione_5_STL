@@ -78,6 +78,14 @@ int main()
 		cout << "All polygons have non-zero area" << endl;
 	}
 	
+	if (!TestMarker(mesh))
+	{ 
+		cerr<< "Error: some markers are not correctly stored" << std::endl;
+	}
+	else
+	{
+		cout << "All markers are correctly stored" << endl;
+	}
 	
 		
     return 0;

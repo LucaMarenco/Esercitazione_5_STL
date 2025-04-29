@@ -64,7 +64,7 @@ bool ImportCell0Ds(PolygonalMesh& mesh)
 		id = stoi(token);
 
 		getline(converter, token, ';');
-		marker = stoi(token);
+		marker = stoul(token);
 
 		getline(converter, token, ';');
 		x = stod(token);
@@ -75,7 +75,6 @@ bool ImportCell0Ds(PolygonalMesh& mesh)
 		
 		mesh.Cell0DsCoordinates(0, id) = x;
 		mesh.Cell0DsCoordinates(1, id) = y;
-		mesh.Cell0DsId.push_back(id);
         
 
         mesh.Cell0DsId.push_back(id);
@@ -142,7 +141,7 @@ bool ImportCell1Ds(PolygonalMesh& mesh)
         id = stoi(token);
 
         getline(converter, token, ';');
-        marker = stoi(token);
+        marker = stod(token);
 
         getline(converter, token, ';');
         origin = stoi(token);
@@ -150,7 +149,7 @@ bool ImportCell1Ds(PolygonalMesh& mesh)
         getline(converter, token, ';');
         end = stoi(token);
 
-        mesh.Cell1DsId.push_back(id); 
+        
 		mesh.Cell1DsId.push_back(id);
         mesh.Cell1DsExtrema(0, id) = origin;
         mesh.Cell1DsExtrema(1, id) = end;
@@ -334,6 +333,36 @@ bool TestArea(const PolygonalMesh& mesh)
     return allPol;
 }
 
+bool TestMarker(PolygonalMesh& mesh)
+{
+	bool allMark = true;
+	for(const auto& marker_coppie : mesh.MarkerCell0Ds)
+		for(size_t id : marker_coppie.second)
+			if (id >= mesh.Cell0DsId.size() || mesh.Cell0DsId[id] != id)
+			{	
+				allMark = false;
+				cout << "cell0" << endl;
+			}
+			
+	
+			
+	for(const auto& marker_coppie : mesh.MarkerCell1Ds)
+		for(size_t id : marker_coppie.second)
+			if (id >= mesh.Cell1DsId.size() || mesh.Cell1DsId[id] != id)
+				{	
+				allMark = false;
+				cout << "cell1" << endl;
+				}
+			
+	for(const auto& marker_coppie : mesh.MarkerCell2Ds)
+		for(size_t id : marker_coppie.second)
+			if (id >= mesh.Cell2DsId.size() || mesh.Cell2DsId[id] != id)
+				{	
+				allMark = false;
+				cout << "cell2" << endl;
+				}
+	return allMark;
+}
 }
 
 
